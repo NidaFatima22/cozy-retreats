@@ -1,0 +1,122 @@
+{
+ "properties": [
+  {
+   "slug": "1bhk-bahria-town",
+   "name": "1 BHK Apartment — Bahria Town",
+   "location": "Bahria Town, Lahore",
+   "area": "Bahria Town",
+   "type": "1 Bedroom",
+   "price": 7000,
+   "available": true,
+   "description": "A comfortable 1 bedroom apartment in Bahria Town, Lahore, with a living area and kitchen. Message us on WhatsApp to check availability and book your stay.",
+   "images": [
+    "/images/1bhk-bahria-town/1.jpeg",
+    "/images/1bhk-bahria-town/2.jpeg",
+    "/images/1bhk-bahria-town/3.jpeg",
+    "/images/1bhk-bahria-town/4.jpeg",
+    "/images/1bhk-bahria-town/6.jpeg",
+    "/images/1bhk-bahria-town/8.jpeg",
+    "/images/1bhk-bahria-town/77.jpeg"
+   ]
+  },
+  {
+   "slug": "1bhk-zameen-opal",
+   "name": "1 BHK Apartment",
+   "location": "Zameen Opal, Lahore",
+   "area": "Zameen Opal",
+   "type": "1 Bedroom",
+   "price": 16000,
+   "available": true,
+   "description": "A comfortable 1 bedroom stay in Zameen Opal, Lahore. Message us on WhatsApp for availability and the latest rates.",
+   "images": [
+    "/images/1bhk-zameen-opal/1.jpg",
+    "/images/1bhk-zameen-opal/2.jpg",
+    "/images/1bhk-zameen-opal/3.jpg",
+    "/images/1bhk-zameen-opal/4.jpg",
+    "/images/1bhk-zameen-opal/5.jpg"
+   ]
+  },
+  {
+   "slug": "2bhk-zameen-opal",
+   "name": "2 BHK Apartment",
+   "location": "Zameen Opal, Lahore",
+   "area": "Zameen Opal",
+   "type": "2 Bedrooms",
+   "price": 20000,
+   "available": true,
+   "description": "A comfortable 2 bedrooms stay in Zameen Opal, Lahore. Message us on WhatsApp for availability and the latest rates.",
+   "images": [
+    "/images/2bhk-zameen-opal/1.jpg",
+    "/images/2bhk-zameen-opal/2.jpg",
+    "/images/2bhk-zameen-opal/3.jpg",
+    "/images/2bhk-zameen-opal/4.jpg",
+    "/images/2bhk-zameen-opal/5.jpg"
+   ]
+  },
+  {
+   "slug": "bahria-apartment",
+   "name": "Bahria Town Apartment",
+   "location": "Bahria Town, Lahore",
+   "area": "Bahria Town",
+   "type": "Apartment",
+   "price": 8500,
+   "available": true,
+   "description": "A comfortable apartment stay in Bahria Town, Lahore. Message us on WhatsApp for availability and the latest rates.",
+   "images": [
+    "/images/bahria-apartment/1.jpg",
+    "/images/bahria-apartment/2.jpg",
+    "/images/bahria-apartment/3.jpg",
+    "/images/bahria-apartment/4.jpg",
+    "/images/bahria-apartment/5.jpg",
+    "/images/bahria-apartment/6.jpg",
+    "/images/bahria-apartment/7.jpg"
+   ]
+  },
+  {
+   "slug": "studio-bahria",
+   "name": "Studio Apartment",
+   "location": "Bahria Town, Lahore",
+   "area": "Bahria Town",
+   "type": "Studio",
+   "price": 6500,
+   "available": true,
+   "description": "A comfortable studio stay in Bahria Town, Lahore. Message us on WhatsApp for availability and the latest rates.",
+   "images": [
+    "/images/studio-bahria/1.jpg",
+    "/images/studio-bahria/2.jpg",
+    "/images/studio-bahria/3.jpg",
+    "/images/studio-bahria/4.jpg",
+    "/images/studio-bahria/5.jpg",
+    "/images/studio-bahria/6.jpg",
+    "/images/studio-bahria/7.jpg"
+   ]
+  },
+  {
+   "slug": "studio-bahria-2",
+   "name": "Studio Apartment II",
+   "location": "Bahria Town, Lahore",
+   "area": "Bahria Town",
+   "type": "Studio",
+   "price": 6500,
+   "available": true,
+   "description": "A comfortable studio stay in Bahria Town, Lahore. Message us on WhatsApp for availability and the latest rates.",
+   "images": [
+    "/images/studio-bahria-2/1.jpg",
+    "/images/studio-bahria-2/2.jpg",
+    "/images/studio-bahria-2/3.jpg",
+    "/images/studio-bahria-2/4.jpg",
+    "/images/studio-bahria-2/5.jpg",
+    "/images/studio-bahria-2/6.jpg",
+    "/images/studio-bahria-2/7.jpg",
+    "/images/studio-bahria-2/8.jpg",
+    "/images/studio-bahria-2/9.jpg",
+    "/images/studio-bahria-2/10.jpg",
+    "/images/studio-bahria-2/11.jpg",
+    "/images/studio-bahria-2/12.jpg",
+    "/images/studio-bahria-2/13.jpg"
+   ]
+  }
+ ],
+ "reviews": [],
+ "bookings": []
+}

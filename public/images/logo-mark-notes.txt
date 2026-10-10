@@ -1,0 +1,2 @@
+Created with the built-in image_gen tool.
+Prompt: Extract only the existing building emblem from logo.jpg; remove all text and the white background, preserve the navy and muted gold details, and use a transparent background. Display beside live Cozy Retreats text.
