@@ -18,10 +18,10 @@ test('review submission, moderation, persistence and failed save responses',asyn
  try{
   assert.equal((await request('/api/reviews','POST',{name:'Test',text:'Test review',rating:2.5})).status,400);
   assert.equal((await request('/api/reviews','POST',{name:'Test',text:'Test review',rating:5})).status,200);
-  assert.deepEqual(await(await request('/api/reviews')).json(),[]);
-  const saved=await storage.createStore({file,connectionString:'',production:false}).read();assert.equal(saved.reviews.length,1);
-  assert.equal((await request('/api/admin/reviews/'+saved.reviews[0].id,'PATCH',{approved:true},true)).status,200);
   assert.equal((await(await request('/api/reviews')).json()).length,1);
+  const saved=await storage.createStore({file,connectionString:'',production:false}).read();assert.equal(saved.reviews.length,1);
+  assert.equal((await request('/api/admin/reviews/'+saved.reviews[0].id,'PATCH',{approved:false},true)).status,200);
+  assert.equal((await(await request('/api/reviews')).json()).length,0);
   fail=true;const failed=await request('/api/reviews','POST',{name:'Test',text:'Test failure',rating:5});assert.equal(failed.status,503);assert((await failed.json()).error);assert.equal((await store.read()).reviews.length,1);
  }finally{server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(dir,{recursive:true,force:true});}
 });

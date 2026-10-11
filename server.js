@@ -21,14 +21,14 @@ app.use(express.json({ limit: '50kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/api/config', (q, s) => s.json({ whatsapp: process.env.WHATSAPP || '923339265522' }));
 app.get('/api/properties', route(async (q, s) => s.json((await store.read()).properties)));
-app.get('/api/reviews', route(async (q, s) => s.json((await store.read()).reviews.filter(r => r.approved).reverse())));
+app.get('/api/reviews', route(async (q, s) => s.json((await store.read()).reviews.filter(r => r.approved || !r.moderated).reverse())));
 
 app.post('/api/reviews', route(async (q, s) => {
   const { name, text, property } = q.body, rating = +q.body.rating;
   if (!clean(name, 60) || !clean(text, 600) || !(Number.isInteger(rating) && rating >= 1 && rating <= 5)) return s.status(400).json({ error: 'Name, rating (1-5) and review text are required.' });
-  const r = { id: id(), name: clean(name, 60), rating, text: clean(text, 600), property: clean(property, 80), approved: false, date: new Date().toISOString() };
+  const r = { id: id(), name: clean(name, 60), rating, text: clean(text, 600), property: clean(property, 80), approved: true, date: new Date().toISOString() };
   await store.edit(d => { d.reviews.push(r); }); notify('New review on Cozy Retreats', `${r.name} (${r.rating}/5): ${r.text}`);
-  s.json({ ok: true });
+  s.json({ ok: true, review: r });
 }));
 
 app.post('/api/bookings', route(async (q, s) => {
@@ -44,7 +44,7 @@ app.post('/api/bookings', route(async (q, s) => {
 app.get('/api/admin/data', auth, route(async (q, s) => { const d = await store.read(); s.json({ ...d, bookings: [...d.bookings].reverse(), reviews: [...d.reviews].reverse() }); }));
 app.patch('/api/admin/bookings/:id', auth, route(async (q, s) => { const result = await store.edit(d => { const b = d.bookings.find(x => x.id === q.params.id); if (!b) missing(); b.status = clean(q.body.status, 20); return b; }); s.json(result); }));
 app.delete('/api/admin/bookings/:id', auth, route(async (q, s) => { await store.edit(d => { d.bookings = d.bookings.filter(x => x.id !== q.params.id); }); s.json({ ok: true }); }));
-app.patch('/api/admin/reviews/:id', auth, route(async (q, s) => { const result = await store.edit(d => { const r = d.reviews.find(x => x.id === q.params.id); if (!r) missing(); r.approved = !!q.body.approved; return r; }); s.json(result); }));
+app.patch('/api/admin/reviews/:id', auth, route(async (q, s) => { const result = await store.edit(d => { const r = d.reviews.find(x => x.id === q.params.id); if (!r) missing(); r.approved = !!q.body.approved; r.moderated = true; return r; }); s.json(result); }));
 app.delete('/api/admin/reviews/:id', auth, route(async (q, s) => { await store.edit(d => { d.reviews = d.reviews.filter(x => x.id !== q.params.id); }); s.json({ ok: true }); }));
 app.patch('/api/admin/properties/:slug', auth, route(async (q, s) => { const result = await store.edit(d => { const p = d.properties.find(x => x.slug === q.params.slug); if (!p) missing(); if (q.body.price) p.price = +q.body.price; if (typeof q.body.available === 'boolean') p.available = q.body.available; return p; }); s.json(result); }));
 app.use((error, q, s, next) => {

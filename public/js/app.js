@@ -53,7 +53,23 @@ function reviewForm(el, props) {
   const f = $('#rf', el), pk = $('.pick', f), m = $('.msg', f);
   const paint = () => pk.innerHTML = [1, 2, 3, 4, 5].map(i => `<button type="button" data-i="${i}" aria-label="${i} stars" aria-pressed="${i === r}" class="rating-button ${i <= r ? 'filled' : ''}">${starIcon}</button>`).join('');
   paint(); pk.onclick = e => { const button = e.target.closest('[data-i]'); if (button) { r = +button.dataset.i; paint(); } };
-  f.onsubmit = async e => { e.preventDefault(); m.className = 'msg'; try { await api('/api/reviews', { method: 'POST', body: { ...Object.fromEntries(new FormData(f)), rating: r } }); f.reset(); m.className = 'msg ok'; m.textContent = 'Thank you! Your review will appear once approved.'; } catch (x) { m.className = 'msg er'; m.textContent = x.message; } };
+  f.onsubmit = async e => {
+    e.preventDefault(); m.className = 'msg';
+    const submit = $('button[type="submit"]', f) || $('button.btn', f);
+    submit.disabled = true;
+    try {
+      const result = await api('/api/reviews', { method: 'POST', body: { ...Object.fromEntries(new FormData(f)), rating: r } });
+      const list = $('#rl');
+      if (list && result.review) {
+        if (!$('.rev', list)) list.innerHTML = '';
+        list.insertAdjacentHTML('afterbegin', revCard(result.review));
+        reveal();
+      }
+      f.reset(); r = 5; paint(); m.className = 'msg ok';
+      m.textContent = 'Thank you! Your review is now published.';
+    } catch (x) { m.className = 'msg er'; m.textContent = x.message; }
+    finally { submit.disabled = false; }
+  };
 }
 
 const P = {
@@ -93,7 +109,7 @@ const P = {
         const d = await call('/api/admin/data'); login.style.display = 'none'; dash.style.display = 'block';
         $('#aprops').innerHTML = `<tr><th>Property</th><th>Price/night</th><th>Available</th><th></th></tr>` + d.properties.map(p => `<tr><td>${esc(p.name)} – ${esc(p.area)}</td><td><input type="number" value="${p.price}" id="pr-${p.slug}" style="width:110px"></td><td><input type="checkbox" id="av-${p.slug}" ${p.available ? 'checked' : ''} style="width:auto"></td><td><button class="btn sm" data-s="${p.slug}">Save</button></td></tr>`).join('');
         $('#abook').innerHTML = `<tr><th>Date</th><th>Guest</th><th>Property</th><th>Stay</th><th>Status</th><th></th></tr>` + (d.bookings.map(b => `<tr><td>${new Date(b.date).toLocaleDateString()}</td><td>${esc(b.name)}<br><a href="https://wa.me/92${esc(b.phone.replace(/\D/g, '').replace(/^0/, '').replace(/^92/, ''))}" target="_blank">${esc(b.phone)}</a><br>${esc(b.email)}</td><td>${esc(b.property)}<br>${b.guests} guests</td><td>${b.checkin || '-'} → ${b.checkout || '-'}<br><i>${esc(b.message)}</i></td><td><select data-b="${b.id}">${['new', 'contacted', 'confirmed', 'cancelled'].map(s => `<option ${s === b.status ? 'selected' : ''}>${s}</option>`).join('')}</select></td><td><button class="btn o sm" data-db="${b.id}">Delete</button></td></tr>`).join('') || '<tr><td colspan="6" class="mut">No bookings yet</td></tr>');
-        $('#arev').innerHTML = `<tr><th>Review</th><th>Status</th><th></th></tr>` + (d.reviews.map(r => `<tr><td><span class="stars">${stars(r.rating)}</span> <b>${esc(r.name)}</b><br>${esc(r.text)}</td><td>${r.approved ? 'Published' : 'Pending'}</td><td><button class="btn sm" data-ap="${r.id}" data-v="${!r.approved}">${r.approved ? 'Unpublish' : 'Approve'}</button><button class="btn o sm" data-dr="${r.id}">Delete</button></td></tr>`).join('') || '<tr><td colspan="3" class="mut">No reviews yet</td></tr>');
+        $('#arev').innerHTML = `<tr><th>Review</th><th>Status</th><th></th></tr>` + (d.reviews.map(r => `<tr><td><span class="stars">${stars(r.rating)}</span> <b>${esc(r.name)}</b><br>${esc(r.text)}</td><td>${(r.approved || !r.moderated) ? 'Published' : 'Pending'}</td><td><button class="btn sm" data-ap="${r.id}" data-v="${!(r.approved || !r.moderated)}">${(r.approved || !r.moderated) ? 'Unpublish' : 'Approve'}</button><button class="btn o sm" data-dr="${r.id}">Delete</button></td></tr>`).join('') || '<tr><td colspan="3" class="mut">No reviews yet</td></tr>');
       } catch (e) { sessionStorage.removeItem('cr_admin'); login.style.display = 'block'; dash.style.display = 'none'; if (pw) $('#lerr').textContent = e.message; }
     }
     $('#lf').onsubmit = e => { e.preventDefault(); pw = $('#pw').value; sessionStorage.setItem('cr_admin', pw); load(); };
