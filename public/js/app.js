@@ -24,12 +24,7 @@ function reveal() {
   $$('.rv:not(.in)').forEach((el, i) => { el.style.transitionDelay = (i % 6) * 80 + 'ms'; io.observe(el); });
 }
 const card = p => `<a class="card rv" href="/property.html?slug=${p.slug}"><div class="im"><img loading="lazy" src="${p.images[0]}" alt="${esc(p.name)}"></div><div class="b"><div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">${esc(p.type)}</span><span class="tag ${p.available ? '' : 'x'}">${p.available ? 'Available' : 'Booked'}</span></div><h3 style="margin:10px 0 4px">${esc(p.name)}</h3><p class="mut"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ${esc(p.location)}</p><p class="price" style="margin-top:8px">${pkr(p.price)} <small class="mut" style="font-weight:400">/ night</small></p></div></a>`;
-const sampleReviews = [
-{name:'Ayesha Khan',text:'A comfortable space to unwind after a busy day in Lahore.',rating:5,sample:true},
-{name:'Ahmed Raza',text:'The apartment layout made a short stay feel relaxed and convenient.',rating:5,sample:true},
-{name:'Hira Malik',text:'A cozy setting for spending quality time with family.',rating:5,sample:true}
-];
-const revCard = r => `<div class="rev rv">${r.sample ? '<p class="sample-label">Sample review · fictional example</p>' : ''}<div class="stars">${stars(r.rating)}</div><p style="margin:10px 0">“${esc(r.text)}”</p><b>${esc(r.name)}</b>${r.property ? `<span class="mut"> · ${esc(r.property)}</span>` : ''}</div>`;
+const revCard = r => `<div class="rev rv"><div class="stars">${stars(r.rating)}</div><p style="margin:10px 0">“${esc(r.text)}”</p><b>${esc(r.name)}</b>${r.property ? `<span class="mut"> · ${esc(r.property)}</span>` : ''}</div>`;
 
 function bookingForm(el, props, pre) {
   el.innerHTML = `<form id="bf"><h3>Book on WhatsApp</h3><p class="mut">Add your stay details, then send your message on WhatsApp. We will confirm availability and pricing in the chat.</p><div><label for="booking-name">Your name</label><input id="booking-name" name="name" autocomplete="name" maxlength="60" required></div><div><label for="booking-property">Property</label><select id="booking-property" name="property"><option>General enquiry</option>${props.map(p => `<option ${p.slug === pre ? 'selected' : ''}>${esc(p.name)} – ${esc(p.area)}</option>`).join('')}</select></div><div class="two"><div><label for="booking-checkin">Check-in</label><input id="booking-checkin" name="checkin" type="date" required></div><div><label for="booking-checkout">Check-out</label><input id="booking-checkout" name="checkout" type="date" required></div></div><div><label for="booking-guests">Guests</label><input id="booking-guests" name="guests" type="number" min="1" max="10" step="1" value="2" required></div><div><label for="booking-message">Message (optional)</label><textarea id="booking-message" name="message" rows="3" maxlength="500"></textarea></div><p class="mut">Your booking is confirmed only after we reply on WhatsApp. Please read our <a class="text-link" href="/rules.html">house rules</a> before booking.</p><button type="submit" class="btn wa">Continue to WhatsApp</button></form>`;
@@ -65,7 +60,8 @@ const P = {
   async home() {
     const [ps, rs] = await Promise.all([api('/api/properties'), api('/api/reviews')]);
     $('#feat').innerHTML = ps.slice(0, 3).map(card).join('');
-    $('#revs').innerHTML = rs.length ? rs.slice(0, 3).map(revCard).join('') : sampleReviews.map(revCard).join('');
+    $('#revs').innerHTML = rs.slice(0, 3).map(revCard).join('');
+    $('#revs').closest('section').hidden = !rs.length;
   },
   async properties() {
     const ps = await api('/api/properties'), areas = ['All', ...new Set(ps.map(p => p.area))];
@@ -84,7 +80,7 @@ const P = {
   },
   async reviews() {
     const [ps, rs] = await Promise.all([api('/api/properties'), api('/api/reviews')]);
-    $('#rl').innerHTML = rs.length ? rs.map(revCard).join('') : sampleReviews.map(revCard).join('');
+    $('#rl').innerHTML = rs.length ? rs.map(revCard).join('') : '<p class="mut">Stayed with us? Share your experience below.</p>';
     reviewForm($('#rform'), ps);
   },
   async contact() { bookingForm($('#cform'), await api('/api/properties')); },
