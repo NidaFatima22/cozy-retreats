@@ -79,3 +79,10 @@ body{font-family:"Segoe UI",Arial,sans-serif;line-height:1.7}h1,h2,h3,.brand>spa
 @media(max-width:460px){.reviews-layout #rl>.rev,#revs>.rev{flex-basis:100%;max-width:360px}.rev{height:330px}}
 
 body[data-page="reviews"] .pg>h1,body[data-page="reviews"] .pg>.eyebrow{text-align:center}body[data-page="reviews"] .pg>.eyebrow{display:block}.rev .review-text{flex-shrink:0;min-height:8.25em}.rev .review-author{min-height:78px;flex-shrink:0}
+
+/* Balanced review rows and a dedicated editorial feedback section. */
+.reviews-layout #rl{gap:20px}.reviews-layout #rl>.rev{flex:1 0 calc((100% - (var(--review-columns,5) - 1)*20px)/var(--review-columns,5));max-width:none;padding:22px;height:330px;background:linear-gradient(145deg,#12213f,#0d1933)}
+.review-compose{display:grid;grid-template-columns:.85fr 1.15fr;gap:64px;align-items:center;margin-top:64px;padding:48px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(130deg,#0e1b32,#081226)}.review-compose-intro h2{font-size:clamp(2rem,3.5vw,3rem);margin:16px 0 22px;line-height:1.15}.review-compose-intro p{color:var(--mut);max-width:380px;margin-bottom:24px}.review-compose-intro .text-link{font-size:.85rem}.reviews-layout .review-compose #rform{margin:0;max-width:none;padding:28px;background:#101f3b;border-radius:16px}.review-compose #rf{gap:16px}.review-compose #rf h3{font-size:1.45rem;margin-bottom:8px}.review-compose #rf textarea{min-height:130px;resize:vertical}.review-compose #rf>.btn{width:100%;margin-top:4px}
+@media(max-width:1100px){.reviews-layout #rl>.rev{flex-basis:calc((100% - 40px)/3)}.review-compose{gap:32px;padding:32px}}
+@media(max-width:760px){.reviews-layout #rl>.rev{flex-basis:calc((100% - 20px)/2)}.review-compose{grid-template-columns:1fr;padding:24px;gap:28px;margin-top:40px}.review-compose-intro p{max-width:none}}
+@media(max-width:460px){.reviews-layout #rl>.rev{flex-basis:100%}.review-compose{padding:20px 16px}.reviews-layout .review-compose #rform{padding:20px}}

@@ -47,9 +47,16 @@ function bookingForm(el, props, pre) {
     location.assign(wa(`Hi Cozy Retreats! I would like to book a stay.\nName: ${d.name.trim()}\nProperty: ${d.property}\nCheck-in: ${d.checkin}\nCheck-out: ${d.checkout}\nGuests: ${d.guests}\nPlease share details of the 20% winter offer.${d.message.trim() ? '\nMessage: ' + d.message.trim() : ''}`));
   };
 }
+function balanceReviews() {
+  const list = $('#rl');
+  if (!list) return;
+  const count = list.querySelectorAll('.rev').length;
+  const rows = Math.max(1, Math.ceil(count / 5));
+  list.style.setProperty('--review-columns', Math.max(1, Math.ceil(count / rows)));
+}
 function reviewForm(el, props) {
   let r = 5;
-  el.innerHTML = `<form id="rf"><h3>Share your stay</h3><div><label>Your name</label><input name="name" required maxlength="60"></div><div><label>Property stayed at</label><select name="property"><option value="">Select (optional)</option>${props.map(p => `<option>${esc(p.name)} – ${esc(p.area)}</option>`).join('')}</select></div><div class="stars pick"></div><div><label>Your experience</label><textarea name="text" rows="4" required maxlength="600"></textarea></div><div class="msg"></div><button class="btn">Submit Review</button></form>`;
+  el.innerHTML = `<form id="rf"><h3>Share your stay</h3><div><label for="review-name">Your name</label><input id="review-name" name="name" autocomplete="name" required maxlength="60"></div><div><label for="review-property">Property stayed at</label><select id="review-property" name="property"><option value="">Select (optional)</option>${props.map(p => `<option>${esc(p.name)} – ${esc(p.area)}</option>`).join('')}</select></div><div class="stars pick"></div><div><label for="review-text">Your experience</label><textarea id="review-text" name="text" rows="4" required maxlength="600"></textarea></div><div class="msg"></div><button class="btn">Submit Review</button></form>`;
   const f = $('#rf', el), pk = $('.pick', f), m = $('.msg', f);
   const paint = () => pk.innerHTML = [1, 2, 3, 4, 5].map(i => `<button type="button" data-i="${i}" aria-label="${i} stars" aria-pressed="${i === r}" class="rating-button ${i <= r ? 'filled' : ''}">${starIcon}</button>`).join('');
   paint(); pk.onclick = e => { const button = e.target.closest('[data-i]'); if (button) { r = +button.dataset.i; paint(); } };
@@ -63,6 +70,7 @@ function reviewForm(el, props) {
       if (list && result.review) {
         if (!$('.rev', list)) list.innerHTML = '';
         list.insertAdjacentHTML('afterbegin', revCard(result.review));
+        balanceReviews();
         reveal();
       }
       f.reset(); r = 5; paint(); m.className = 'msg ok';
@@ -97,6 +105,7 @@ const P = {
   async reviews() {
     const [ps, rs] = await Promise.all([api('/api/properties'), api('/api/reviews')]);
     $('#rl').innerHTML = rs.length ? rs.map(revCard).join('') : '<p class="mut">Stayed with us? Share your experience below.</p>';
+    balanceReviews();
     reviewForm($('#rform'), ps);
   },
   async contact() { bookingForm($('#cform'), await api('/api/properties')); },
