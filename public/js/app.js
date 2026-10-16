@@ -76,7 +76,7 @@ const P = {
   async home() {
     const [ps, rs] = await Promise.all([api('/api/properties'), api('/api/reviews')]);
     $('#feat').innerHTML = ps.slice(0, 3).map(card).join('');
-    $('#revs').innerHTML = rs.map(revCard).join('');
+    $('#revs').innerHTML = rs.slice(0, 5).map(revCard).join('');
     $('#revs').closest('section').hidden = !rs.length;
   },
   async properties() {
