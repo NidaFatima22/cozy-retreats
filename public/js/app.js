@@ -24,7 +24,7 @@ function reveal() {
   $$('.rv:not(.in)').forEach((el, i) => { el.style.transitionDelay = (i % 6) * 80 + 'ms'; io.observe(el); });
 }
 const card = p => `<a class="card rv" href="/property.html?slug=${p.slug}"><div class="im"><img loading="lazy" src="${p.images[0]}" alt="${esc(p.name)}"></div><div class="b"><div style="display:flex;justify-content:space-between;align-items:center"><span class="tag">${esc(p.type)}</span><span class="tag ${p.available ? '' : 'x'}">${p.available ? 'Available' : 'Booked'}</span></div><h3 style="margin:10px 0 4px">${esc(p.name)}</h3><p class="mut"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> ${esc(p.location)}</p><p class="price" style="margin-top:8px">${pkr(p.price)} <small class="mut" style="font-weight:400">/ night</small></p></div></a>`;
-const revCard = r => `<article class="rev"><div class="stars">${stars(r.rating)}</div><p class="review-text">“${esc(r.text)}”</p><div class="review-author"><b>${esc(r.name)}</b>${r.property ? `<span class="mut">${esc(r.property)}</span>` : ''}</div></article>`;
+const revCard = r => `<article class="rev"><div class="stars">${stars(r.rating)}</div><p class="review-text">“${esc(r.text)}”</p><button type="button" class="review-more">Read full review</button><div class="review-author"><b>${esc(r.name)}</b>${r.property ? `<span class="mut">${esc(r.property)}</span>` : ''}</div></article>`;
 
 function bookingForm(el, props, pre) {
   el.innerHTML = `<form id="bf"><h3>Book on WhatsApp</h3><p class="mut">Add your stay details, then send your message on WhatsApp. We will confirm availability and pricing in the chat.</p><div><label for="booking-name">Your name</label><input id="booking-name" name="name" autocomplete="name" maxlength="60" required></div><div><label for="booking-property">Property</label><select id="booking-property" name="property"><option>General enquiry</option>${props.map(p => `<option ${p.slug === pre ? 'selected' : ''}>${esc(p.name)} – ${esc(p.area)}</option>`).join('')}</select></div><div class="two"><div><label for="booking-checkin">Check-in</label><input id="booking-checkin" name="checkin" type="date" required></div><div><label for="booking-checkout">Check-out</label><input id="booking-checkout" name="checkout" type="date" required></div></div><div><label for="booking-guests">Guests</label><input id="booking-guests" name="guests" type="number" min="1" max="10" step="1" value="2" required></div><div><label for="booking-message">Message (optional)</label><textarea id="booking-message" name="message" rows="3" maxlength="500"></textarea></div><p class="mut">Your booking is confirmed only after we reply on WhatsApp. Please read our <a class="text-link" href="/rules.html">house rules</a> before booking.</p><button type="submit" class="btn wa">Continue to WhatsApp</button></form>`;
@@ -124,3 +124,17 @@ const P = {
   }
 };
 (async () => { layout(); try { WA = (await api('/api/config')).whatsapp; $$('.wal').forEach(a => a.href = wa('Hi Cozy Retreats, I would like to know about availability.')); } catch {} try { await P[document.body.dataset.page]?.(); } catch (e) { console.error(e); } reveal(); })();
+
+const reviewDialog = document.createElement('dialog');
+reviewDialog.className = 'review-dialog';
+reviewDialog.innerHTML = '<form method="dialog"><button class="btn o sm" aria-label="Close review">Close</button></form><h2 id="review-dialog-title"></h2><p class="dialog-review-text"></p>';
+reviewDialog.setAttribute('aria-labelledby', 'review-dialog-title');
+document.body.append(reviewDialog);
+document.addEventListener('click', e => {
+  const button = e.target.closest('.review-more');
+  if (!button) return;
+  const card = button.closest('.rev');
+  reviewDialog.querySelector('h2').textContent = card.querySelector('.review-author b').textContent + '’s review';
+  reviewDialog.querySelector('.dialog-review-text').textContent = card.querySelector('.review-text').textContent;
+  reviewDialog.showModal();
+});
